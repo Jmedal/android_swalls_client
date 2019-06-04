@@ -10,9 +10,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.swalls.EduDetailActivity;
+import com.example.swalls.EduListActivity;
 import com.example.swalls.R;
 import com.example.swalls.adapter.holder.ItemViewHolder;
+import com.example.swalls.core.util.JsonUtils;
+import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
+import com.example.swalls.modal.Lecture;
+import com.example.swalls.modal.Share;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +32,7 @@ public class ListViewAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;
 
-    private List<Edu> data;
+    private List data;
 
     public ListViewAdapter(Context context){
         this.mInflater = LayoutInflater.from(context);
@@ -59,23 +64,49 @@ public class ListViewAdapter extends BaseAdapter {
             holder.item_time = (TextView)convertView.findViewById(R.id.item_time);
             holder.item_layout = (LinearLayout)convertView.findViewById(R.id.item_layout);
             convertView.setTag(holder);
-
         } else {
             holder = (ItemViewHolder) convertView.getTag();
         }
-        holder.item_title.setText((String)data.get(position).getEaTitle());
-        holder.item_time.setText((String)data.get(position).getEaTime());
-        holder.item_layout.setOnClickListener(new View.OnClickListener() {
-           @Override
-            public void onClick(View v) {
-               Intent intent = new Intent(mInflater.getContext(), EduDetailActivity.class);
-               intent.putExtra("id",data.get(position).getId());
-               mInflater.getContext().startActivity(intent);
-           }
-        });
+
+
+        if(EduListActivity.MODE ==0){
+            holder.item_title.setText((String)((Edu)data.get(position)).getEaTitle());
+            holder.item_time.setText((String)((Edu)data.get(position)).getEaTime());
+            holder.item_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mInflater.getContext(), EduDetailActivity.class);
+                    intent.putExtra("id",((Edu)data.get(position)).getId());
+                    mInflater.getContext().startActivity(intent);
+                }
+            });
+        }
+        else if(EduListActivity.MODE ==1){
+            holder.item_title.setText((String)((College)data.get(position)).getTitle());
+            holder.item_time.setText((String)((College)data.get(position)).getTime());
+            holder.item_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mInflater.getContext(), EduDetailActivity.class);
+                    intent.putExtra("id",((College)data.get(position)).getId());
+                    mInflater.getContext().startActivity(intent);
+                }
+            });
+        }
+        else if(EduListActivity.MODE ==2){
+            holder.item_title.setText((String)((Lecture)data.get(position)).getLeTitle());
+            holder.item_time.setText((String)((Lecture)data.get(position)).getLeTime());
+            holder.item_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mInflater.getContext(), EduDetailActivity.class);
+                    intent.putExtra("id",((Lecture)data.get(position)).getId());
+                    mInflater.getContext().startActivity(intent);
+                }
+            });
+        }
         return convertView;
     }
-
     public void setData(List<Edu> data) {
         if (data != null)
             this.data = data;

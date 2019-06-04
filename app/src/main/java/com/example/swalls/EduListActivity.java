@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -24,7 +25,10 @@ import com.example.swalls.adapter.ListViewAdapter;
 import com.example.swalls.constant.Const;
 import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.util.JsonUtils;
+import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
+import com.example.swalls.modal.Lecture;
+import com.example.swalls.modal.Share;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -33,7 +37,11 @@ import java.util.Map;
 
 public class EduListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
-    private final String url = Const.URL + "/auth/edu/all";//定义网络图片渎地址
+    public static String URL;//定义网络图片渎地址
+
+    public static int MODE = 0; //0：教务处公告 1：社团活动  2：讲座一览
+
+    private String url;
 
     private ListViewAdapter adapter;
 
@@ -53,6 +61,15 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.items_list);
+        Bundle bundle = getIntent().getExtras();
+
+        String mode = null;
+        if(bundle!=null){
+            ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name"));
+            EduListActivity.MODE = bundle.getInt("modeI");
+            EduListActivity.URL = Const.URL + bundle.getString("mode");
+            this.url = EduListActivity.URL +"/all";
+        }
         init();
     }
 
@@ -91,9 +108,15 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
                             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    Log.i("教务处信息", "post请求成功");
-                                    List<Edu> data = JsonUtils.fromListJson(response,Edu.class);
+                                    Log.i("信息", "post请求成功");
                                     Message message = new Message();
+                                    List data = null;
+                                    if(EduListActivity.MODE ==0)
+                                        data = JsonUtils.fromListJson(response, Edu.class);
+                                    else if(EduListActivity.MODE ==1)
+                                        data = JsonUtils.fromListJson(response, College.class);
+                                    else if(EduListActivity.MODE ==2)
+                                        data = JsonUtils.fromListJson(response,Lecture.class);
                                     message.what = 1;
                                     message.obj = data;
                                     handler.sendMessage(message);
@@ -101,7 +124,7 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
                             }, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.i("教务处信息", "post请求失败" + error.toString());
+                                    Log.i("信息", "post请求失败" + error.toString());
                                     Toast.makeText(EduListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                                 }
                             });
@@ -153,7 +176,7 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
             @Override
             public void run() {
                 try {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL+"/auth", new Response.Listener<String>() {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             try {

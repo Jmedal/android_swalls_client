@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_background"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/titlebar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:background="@mipmap/image_titlebar_background"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="106dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10.0dip"
+                android:layout_marginTop="9.0dip"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="23.0sp" />
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <GridLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginBottom="8dp"
+        android:columnCount="2"
+        android:orientation="horizontal"
+        android:rowCount="2"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintWidth_percent="0.9"
+        app:layout_constraintHeight_percent="0.6"
+        app:layout_constraintVertical_bias="0.32">
+
+        <ImageView
+            android:id="@+id/edu_img"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
+            android:background="@color/edu"
+            app:srcCompat="@mipmap/edu_img"/>
+
+        <ImageView
+            android:id="@+id/college_img"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
+            android:background="@color/college"
+            app:srcCompat="@mipmap/college_img" />
+
+        <ImageView
+            android:id="@+id/sahre_img"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_columnWeight="1"
+            android:layout_rowWeight="1"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
+            android:background="@color/share"
+            app:srcCompat="@mipmap/share_img" />
+
+        <ImageView
+            android:id="@+id/lecture_img"
+            android:layout_width="170dp"
+            android:layout_height="155dp"
+            android:layout_gravity="fill"
+            android:layout_margin="5dp"
+            android:background="@color/lecture"
+            app:srcCompat="@mipmap/lecture_img" />
+
+    </GridLayout>
+</android.support.constraint.ConstraintLayout>

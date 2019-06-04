@@ -10,20 +10,20 @@ import android.text.method.ScrollingMovementMethod;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.constant.Const;
 import com.example.swalls.core.data.converter.MultipartHttpConverter;
 import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
 import com.example.swalls.core.util.JsonUtils;
+import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
+import com.example.swalls.modal.Lecture;
 
 import org.json.JSONObject;
 
@@ -33,7 +33,7 @@ import java.util.Map;
 
 public class EduDetailActivity extends AppCompatActivity {
 
-    private final String url = Const.URL + "/auth/edu/selectById";//定义网络图片渎地址
+    private final String url = EduListActivity.URL+ "/selectById";//定义网络图片渎地址
 
     private TextView tv_title;
 
@@ -54,7 +54,7 @@ public class EduDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.edu_detail);
+        setContentView(R.layout.item_detail);
         init();
         tv_title = (TextView)findViewById(R.id.edu_title);
         tv_time = (TextView)findViewById(R.id.edu_time);
@@ -84,15 +84,33 @@ public class EduDetailActivity extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-            switch (msg.what) {
-                case 1:
-                    Edu data = (Edu)msg.obj;
-                    tv_title.setText(data.getEaTitle());
-                    tv_time.setText(data.getEaTime());
-                    tv_content.setText(data.getEaCont());
-                    break;
-                default:
-                    break;
+            try {
+                switch (msg.what) {
+                    case 1:
+                        if(EduListActivity.MODE ==0){
+                            Edu data = JsonUtils.fromJson(msg.obj.toString(), Edu.class);
+                            tv_title.setText(data.getEaTitle());
+                            tv_time.setText(data.getEaTime());
+                            tv_content.setText(data.getEaCont());
+                        }
+                        else if(EduListActivity.MODE ==1){
+                            College data = JsonUtils.fromJson(msg.obj.toString(), College.class);
+                            tv_title.setText(data.getTitle());
+                            tv_time.setText(data.getTime());
+                            tv_content.setText(data.getContents());
+                        }
+                        else if(EduListActivity.MODE ==2){
+                            Lecture data = JsonUtils.fromJson(msg.obj.toString(), Lecture.class);
+                            tv_title.setText(data.getLeTitle());
+                            tv_time.setText(data.getLeTime());
+                            tv_content.setText(data.getLeCont());
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
 
@@ -109,25 +127,33 @@ public class EduDetailActivity extends AppCompatActivity {
             public void run() {
                 try {
                     // 请求参数
-                    Edu edu = new Edu();
-                    edu.setId(id);
+                    BaseTransferEntity bte = null;
+                    if(EduListActivity.MODE ==0){
+                        Edu item  = new Edu();
+                        item.setId(id);
+                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
+                    }
+                    else if(EduListActivity.MODE ==1){
+                        College item = new College();
+                        item.setId(id);
+                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
+                    }
+                    else if(EduListActivity.MODE ==2){
+                        Lecture item = new Lecture();
+                        item.setId(id);
+                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
+                    }
                     //数据加密
-                    BaseTransferEntity bte = multipartHttpConverter.encryption(edu, sharedPreferences.getString("randomKey",""));
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("object", bte.getObject());
                     jsonObject.put("sign", bte.getSign());
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject jsonObject) {
-                            try {
-                                Edu data = JsonUtils.fromJson(jsonObject.toString(), Edu.class);
-                                Message message = new Message();
-                                message.what = 1;
-                                message.obj = data;
-                                handler.sendMessage(message);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                            Message message = new Message();
+                            message.what = 1;
+                            message.obj = jsonObject;
+                            handler.sendMessage(message);
                         }
                     }, new Response.ErrorListener() {
                         @Override
