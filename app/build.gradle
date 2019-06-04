@@ -36,5 +36,4 @@ dependencies {
     implementation files('libs/jackson/jackson-databind-2.2.1.jar')
     implementation files('libs/jackson/jackson-mapper-asl-1.8.8.jar')
     implementation files('libs/jackson/jackson-module-jaxb-annotations-2.2.1.jar')
-    implementation files('libs/base64/spring-core-4.3.13.RELEASE.jar')
 }
