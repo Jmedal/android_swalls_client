@@ -16,6 +16,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+    }
 }
 
 dependencies {
@@ -25,4 +28,13 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation files('libs/abs/volley.jar')
+    implementation files('libs/fastjson/fastjson-1.2.7.jar')
+    implementation files('libs/jackson/jackson-annotations-2.2.1.jar')
+    implementation files('libs/jackson/jackson-core-2.2.1.jar')
+    implementation files('libs/jackson/jackson-core-asl-1.8.8.jar')
+    implementation files('libs/jackson/jackson-databind-2.2.1.jar')
+    implementation files('libs/jackson/jackson-mapper-asl-1.8.8.jar')
+    implementation files('libs/jackson/jackson-module-jaxb-annotations-2.2.1.jar')
+    implementation files('libs/base64/spring-core-4.3.13.RELEASE.jar')
 }

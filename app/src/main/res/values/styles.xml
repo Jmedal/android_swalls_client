@@ -8,4 +8,12 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="progressBar">
+        <!-- Customize your theme here. -->
+        <item name="android:paddingTop">0dp</item>
+        <item name="android:paddingLeft">0dp</item>
+        <item name="android:paddingRight">15dp</item>
+        <item name="android:paddingBottom">0dp</item>
+    </style>
+
 </resources>
