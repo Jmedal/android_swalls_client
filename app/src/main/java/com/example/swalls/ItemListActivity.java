@@ -6,7 +6,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AbsListView;
@@ -23,7 +22,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.adapter.ListViewAdapter;
 import com.example.swalls.constant.Const;
-import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
+import com.example.swalls.constant.Mode;
+import com.example.swalls.core.security.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
@@ -35,11 +35,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class EduListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
+import static com.example.swalls.constant.Mode.MODE_SHARE;
 
-    public static String URL;//定义网络图片渎地址
+public class ItemListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
-    public static int MODE = 0; //0：教务处公告 1：社团活动  2：讲座一览
+    public static String URL;//定义网络地址
+
+    public static Mode MODE; //MODE_EDU：教务处公告； MODE_COLLEGE：社团活动； MODE_SHARE: 解题习集；MODE_LECTURE：讲座一览；
 
     private String url;
 
@@ -60,15 +62,18 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.items_list);
+        setContentView(R.layout.item_list_activity);
         Bundle bundle = getIntent().getExtras();
 
         String mode = null;
         if(bundle!=null){
-            ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name"));
-            EduListActivity.MODE = bundle.getInt("modeI");
-            EduListActivity.URL = Const.URL + bundle.getString("mode");
-            this.url = EduListActivity.URL +"/all";
+            ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name")); //设置模式名
+            ItemListActivity.MODE = (Mode) bundle.get("modeI");                                        //设置模式
+            ItemListActivity.URL = Const.URL + bundle.getString("mode");                          //设置模式 根URL
+            if(ItemListActivity.MODE != MODE_SHARE)                                                    //设置各模式 获取列表的 URL
+                this.url = ItemListActivity.URL + "/all";
+            else
+                this.url = ItemListActivity.URL + "/showShare";
         }
         init();
     }
@@ -77,15 +82,15 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
         //共享数据
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
         //网络请求器
-        request = Volley.newRequestQueue(EduListActivity.this);
+        request = Volley.newRequestQueue(ItemListActivity.this);
         keyRefresh();
 
         convertView = LayoutInflater.from(this).inflate(R.layout.item_loading,null); //item模版
         adapter = new ListViewAdapter(this);
-        listView = (ListView) findViewById(R.id.list);// 得到一个ListView用来显示条目
-        listView.addFooterView(convertView);// 添加到脚页显示
-        listView.setAdapter(adapter);// 给ListView添加适配器
-        listView.setOnScrollListener(this);// 给ListView注册滚动监听
+        listView = (ListView) findViewById(R.id.list);              // 得到一个ListView用来显示条目
+        listView.addFooterView(convertView);                        // 添加到脚页显示
+        listView.setAdapter(adapter);                               // 给ListView添加适配器
+        listView.setOnScrollListener(this);                         // 给ListView注册滚动监听
     }
 
     @Override
@@ -108,15 +113,22 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
                             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    Log.i("信息", "post请求成功");
                                     Message message = new Message();
                                     List data = null;
-                                    if(EduListActivity.MODE ==0)
-                                        data = JsonUtils.fromListJson(response, Edu.class);
-                                    else if(EduListActivity.MODE ==1)
-                                        data = JsonUtils.fromListJson(response, College.class);
-                                    else if(EduListActivity.MODE ==2)
-                                        data = JsonUtils.fromListJson(response,Lecture.class);
+                                    switch (ItemListActivity.MODE){
+                                        case MODE_EDU:
+                                            data = JsonUtils.fromListJson(response, Edu.class);
+                                            break;
+                                        case MODE_COLLEGE:
+                                            data = JsonUtils.fromListJson(response, College.class);
+                                            break;
+                                        case MODE_SHARE:
+                                            data = JsonUtils.fromListJson(response, Share.class);
+                                            break;
+                                        case MODE_LECTURE:
+                                            data = JsonUtils.fromListJson(response, Lecture.class);
+                                            break;
+                                    }
                                     message.what = 1;
                                     message.obj = data;
                                     handler.sendMessage(message);
@@ -124,8 +136,7 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
                             }, new Response.ErrorListener() {
                                 @Override
                                 public void onErrorResponse(VolleyError error) {
-                                    Log.i("信息", "post请求失败" + error.toString());
-                                    Toast.makeText(EduListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(ItemListActivity.this, "网络连接失败", Toast.LENGTH_LONG).show();
                                 }
                             });
                             request.add(stringRequest);
@@ -149,12 +160,11 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
         @Override
         public void handleMessage(Message msg) {
             // TODO Auto-generated method stub
-            List<Edu> data = (List<Edu>)msg.obj;
+            List data = (List)msg.obj;
             switch (msg.what) {
                 case 1:
                     if (adapter.getCount() < data.size()) {
                         adapter.setData(data);
-                        Log.i("适配器数据注入", "数据大小：" + adapter.getCount() );
                     } else {
                         listView.removeFooterView(convertView);
                     }
@@ -192,7 +202,7 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(EduListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ItemListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                         }
                     }) {
                         @Override
@@ -219,7 +229,5 @@ public class EduListActivity extends AppCompatActivity implements AbsListView.On
         };
         thread.start();
     }
-
-//Toast.makeText(EduListActivity.this, adapter.getCount()+"", Toast.LENGTH_LONG).show();
 }
 

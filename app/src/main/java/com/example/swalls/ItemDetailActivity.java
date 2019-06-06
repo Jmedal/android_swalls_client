@@ -18,8 +18,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.constant.Const;
-import com.example.swalls.core.data.converter.MultipartHttpConverter;
-import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
+import com.example.swalls.core.security.converter.MultipartHttpConverter;
+import com.example.swalls.core.security.converter.entity.BaseTransferEntity;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
@@ -31,9 +31,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EduDetailActivity extends AppCompatActivity {
+public class ItemDetailActivity extends AppCompatActivity {
 
-    private final String url = EduListActivity.URL+ "/selectById";//定义网络图片渎地址
+    private final String url = ItemListActivity.URL+ "/selectById";//定义网络图片渎地址
 
     private TextView tv_title;
 
@@ -54,25 +54,23 @@ public class EduDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.item_detail);
+        setContentView(R.layout.item_detail_activity);
         init();
-        tv_title = (TextView)findViewById(R.id.edu_title);
-        tv_time = (TextView)findViewById(R.id.edu_time);
-        tv_content = (TextView)findViewById(R.id.edu_content);
+        tv_title = (TextView)findViewById(R.id.item_detail_title);
+        tv_time = (TextView)findViewById(R.id.item_detail_time);
+        tv_content = (TextView)findViewById(R.id.item_detail_content);
         tv_content.setMovementMethod(ScrollingMovementMethod.getInstance());
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null)
-            requestEduInfo(bundle.getLong("id"));
-
-
+            requestDetailInfo(bundle.getLong("id")); //获取数据id
     }
 
     private void init() {
         //共享数据
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
         //网络请求器
-        request = Volley.newRequestQueue(EduDetailActivity.this);
+        request = Volley.newRequestQueue(ItemDetailActivity.this);
         //数据转换器
         multipartHttpConverter = new MultipartHttpConverter();
 
@@ -87,23 +85,25 @@ public class EduDetailActivity extends AppCompatActivity {
             try {
                 switch (msg.what) {
                     case 1:
-                        if(EduListActivity.MODE ==0){
-                            Edu data = JsonUtils.fromJson(msg.obj.toString(), Edu.class);
-                            tv_title.setText(data.getEaTitle());
-                            tv_time.setText(data.getEaTime());
-                            tv_content.setText(data.getEaCont());
-                        }
-                        else if(EduListActivity.MODE ==1){
-                            College data = JsonUtils.fromJson(msg.obj.toString(), College.class);
-                            tv_title.setText(data.getTitle());
-                            tv_time.setText(data.getTime());
-                            tv_content.setText(data.getContents());
-                        }
-                        else if(EduListActivity.MODE ==2){
-                            Lecture data = JsonUtils.fromJson(msg.obj.toString(), Lecture.class);
-                            tv_title.setText(data.getLeTitle());
-                            tv_time.setText(data.getLeTime());
-                            tv_content.setText(data.getLeCont());
+                        switch (ItemListActivity.MODE){
+                            case MODE_EDU:
+                                Edu edu = JsonUtils.fromJson(msg.obj.toString(), Edu.class);
+                                tv_title.setText(edu.getEaTitle());
+                                tv_time.setText(edu.getEaTime());
+                                tv_content.setText(edu.getEaCont());
+                                break;
+                            case MODE_COLLEGE:
+                                College college = JsonUtils.fromJson(msg.obj.toString(), College.class);
+                                tv_title.setText(college.getTitle());
+                                tv_time.setText(college.getTime());
+                                tv_content.setText(college.getContents());
+                                break;
+                            case MODE_LECTURE:
+                                Lecture lecture = JsonUtils.fromJson(msg.obj.toString(), Lecture.class);
+                                tv_title.setText(lecture.getLeTitle());
+                                tv_time.setText(lecture.getLeTime());
+                                tv_content.setText(lecture.getLeCont());
+                                break;
                         }
                         break;
                     default:
@@ -116,32 +116,32 @@ public class EduDetailActivity extends AppCompatActivity {
 
     };
 
-
-
     /**
-     * 获取教务处公告
+     * 获取详细数据
      */
-    private void requestEduInfo(final Long id){
+    private void requestDetailInfo(final Long id){
         mThread = new Thread() {
             @Override
             public void run() {
                 try {
                     // 请求参数
                     BaseTransferEntity bte = null;
-                    if(EduListActivity.MODE ==0){
-                        Edu item  = new Edu();
-                        item.setId(id);
-                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
-                    }
-                    else if(EduListActivity.MODE ==1){
-                        College item = new College();
-                        item.setId(id);
-                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
-                    }
-                    else if(EduListActivity.MODE ==2){
-                        Lecture item = new Lecture();
-                        item.setId(id);
-                        bte = multipartHttpConverter.encryption(item, sharedPreferences.getString("randomKey",""));
+                    switch (ItemListActivity.MODE){
+                        case MODE_EDU:
+                            Edu edu  = new Edu();
+                            edu.setId(id);
+                            bte = multipartHttpConverter.encryption(edu, sharedPreferences.getString("randomKey",""));
+                            break;
+                        case MODE_COLLEGE:
+                            College college = new College();
+                            college.setId(id);
+                            bte = multipartHttpConverter.encryption(college, sharedPreferences.getString("randomKey",""));
+                            break;
+                        case MODE_LECTURE:
+                            Lecture lecture = new Lecture();
+                            lecture.setId(id);
+                            bte = multipartHttpConverter.encryption(lecture, sharedPreferences.getString("randomKey",""));
+                            break;
                     }
                     //数据加密
                     JSONObject jsonObject = new JSONObject();
@@ -158,7 +158,7 @@ public class EduDetailActivity extends AppCompatActivity {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(EduDetailActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(ItemDetailActivity.this, "网络连接失败", Toast.LENGTH_LONG).show();
                         }
                     }) {
                         @Override
