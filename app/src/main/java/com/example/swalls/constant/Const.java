@@ -28,6 +28,6 @@ public interface Const {
     /**
      * 服务器网络地址
      */
-    String URL = "http://192.168.92.1:8080/auth";
+    String URL = "https://www.swalls.cn/swalls/auth";
 
 }

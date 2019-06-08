@@ -64,7 +64,7 @@ public class PdfShowActivity extends AppCompatActivity implements OnPageChangeLi
      */
     private void displayFromFile( File file ) {
         pdfView.fromFile(file)   //设置pdf文件地址
-                .defaultPage(6)         //设置默认显示第1页
+                .defaultPage(1)         //设置默认显示第1页
                 .onPageChange(this)     //设置翻页监听
                 .onLoad(this)           //设置加载监听
                 .onDraw(this)            //绘图监听

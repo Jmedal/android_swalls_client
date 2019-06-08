@@ -5,6 +5,10 @@
     <color name="colorAccent">#14C5DB</color>
 
     <item type="color" name="white">#ffffffff</item>
+    <item type="color" name="blue">#03A9F4</item>
+    <item type="color" name="border">#ccc</item>
+    <item type="color" name="text">#333</item>
+
     <item type="color" name="category_title_normal_background">#FFADB2AD</item>
 
     <item type="color" name="black">#000000</item>
@@ -13,4 +17,5 @@
     <item type="color" name="college">#0CC308</item>
     <item type="color" name="share">#7E86FC</item>
     <item type="color" name="lecture">#EDCB37</item>
+
 </resources>

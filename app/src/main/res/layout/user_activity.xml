@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F0F3F6"
+    >
+
+    <include layout="@layout/title_layout"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="208dp"
+        app:srcCompat="@mipmap/ic_launcher_round" />
+
+    <LinearLayout style="@style/wrap_layout" >
+        <!-- 上圆角-->
+        <LinearLayout
+            android:id="@+id/ask_question"
+            style="@style/top_layout">
+            <TextView style="@style/usertext" android:text="提出问题" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+
+        <!-- 分割线 -->
+        <View style="@style/bg_line"/>
+        <!-- 无圆角-->
+        <LinearLayout
+            android:id="@+id/my_question"
+            style="@style/mid_layout">
+            <TextView style="@style/usertext" android:text="我的提问" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+
+        <View style="@style/bg_line"/>
+        <!-- 下圆角-->
+        <LinearLayout
+            android:id="@+id/my_collection"
+            style="@style/bottom_layout">
+            <TextView style="@style/usertext" android:text="我的收藏" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <!-- 全圆角-->
+    <LinearLayout style="@style/wrap_layout">
+
+        <LinearLayout
+            android:id="@+id/publish_college"
+            style="@style/single_layout">
+            <TextView style="@style/usertext" android:text="发布活动"/>
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
