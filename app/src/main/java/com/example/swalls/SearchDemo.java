@@ -29,14 +29,14 @@ public class SearchDemo extends AppCompatActivity {
         setContentView(R.layout.activity_search);
 
         // 3. 绑定组件
-        searchView = (SearchView) findViewById(R.id.search_view);
+        searchView = findViewById(R.id.search_view);
 
         // 4. 设置点击搜索按键后的操作（通过回调接口）
         // 参数 = 搜索框输入的内容
         searchView.setOnClickSearch(new ICallBack() {
             @Override
             public void SearchAciton(String string) {
-//                System.out.println("我收到了" + string);
+                System.out.println("我收到了" + string);
 
                 //新建一个显式意图，第一个参数为当前Activity类对象，第二个参数为你要打开的Activity类
                 Intent intent = new Intent(SearchDemo.this,WallListActivity.class);

@@ -160,9 +160,9 @@ public class SearchView extends LinearLayout {
                     if (!(mCallBack == null)){
                         mCallBack.SearchAciton(et_search.getText().toString());
                     }
-                    Toast.makeText(context, "需要搜索的是" + et_search.getText(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "您搜索的是" + et_search.getText(), Toast.LENGTH_SHORT).show();
 
-                    // 2. 点击搜索键后，对该搜索字段在数据库是否存在进行检查（查询）->> 关注1
+                    // 2. 点击搜索键后，对该搜索字段在数据库是否存在进行检查（查询）->> 关注
                     boolean hasData = hasData(et_search.getText().toString().trim());
                     // 3. 若存在，则不保存；若不存在，则将该搜索字段保存（插入）到数据库，并作为历史搜索记录
                     if (!hasData) {

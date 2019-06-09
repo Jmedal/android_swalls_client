@@ -2,6 +2,7 @@ package com.example.swalls;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -44,6 +45,9 @@ import com.example.swalls.core.security.converter.MultipartHttpConverter;
 import com.example.swalls.core.security.converter.entity.BaseTransferEntity;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.core.util.VolleySingleton;
+import com.example.swalls.modal.College;
+import com.example.swalls.modal.Edu;
+import com.example.swalls.modal.Lecture;
 import com.example.swalls.modal.Wall;
 
 import org.json.JSONArray;
@@ -71,14 +75,19 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
     private Thread mThreadAnswer;
     private View convertView;
 
-    private final String  PictureUrl = WallListActivity.URL + "/getPictureFileName";
+    private final String PictureUrl = WallListActivity.URL + "/getPictureFileName";
     private Thread mThreadPicture;
 
-    private static final String TAG = "MainActivity";
+    private final String sendDataUrl = WallListActivity.URL + "/get";
+
+    private static final String TAG = "WallDetailActivity";
     private android.support.v7.widget.Toolbar toolbar;
     private TextView bt_comment;
     private CommentExpandAdapter commentadapter;
     private BottomSheetDialog dialog;
+
+    private Long parentId;
+    private LayoutInflater mInflater;
 
 
     //共享数据
@@ -102,6 +111,8 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
 
         Bundle bundle = getIntent().getExtras();
         if(bundle!=null){
+            parentId = bundle.getLong("id");
+            System.out.println("parentId: " + parentId);
             requestWallInfo(bundle.getLong("id"));
             requestPictureInfo(bundle.getLong("id"));
             requestAnswerList(bundle.getLong("id"));
@@ -149,7 +160,7 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
         /**
          * 解决bsd显示不全的情况
          */
-        View parent = (View) commentView.getParent();
+        final View parent = (View) commentView.getParent();
         BottomSheetBehavior behavior = BottomSheetBehavior.from(parent);
         commentView.measure(0,0);
         behavior.setPeekHeight(commentView.getMeasuredHeight());
@@ -160,8 +171,71 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
             public void onClick(View view) {
                 String commentContent = commentText.getText().toString().trim();
                 if(!TextUtils.isEmpty(commentContent)){
+                    System.out.println(commentContent);
 
-                    //commentOnWork(commentContent);
+                    final Wall wall = new Wall();
+                    wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
+                    wall.setAbstracts("");
+                    wall.setLabel("大一");
+                    wall.setParentObjectId(parentId);
+                    wall.setWriteContests(commentContent);
+                    wall.setWriterTime("2019/06/09");
+//                    System.out.println(wall);
+
+                    mThread = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                // 请求参数
+                                BaseTransferEntity bte = null;
+                                System.out.println(wall);
+                                bte = multipartHttpConverter.encryption(wall, sharedPreferences.getString("randomKey",""));
+                                //数据加密
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("object", bte.getObject());
+                                jsonObject.put("sign", bte.getSign());
+                                JsonObjectRequestString stringRequest = new JsonObjectRequestString(Request.Method.POST, sendDataUrl, jsonObject, new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String jsonObject) {
+                                        System.out.println("response: " + jsonObject);
+                                        String response  = jsonObject.replace("\"", "");
+                                        if(response == "accept"){
+                                            System.out.println("回答成功");
+
+                                            Intent intent = new Intent(mInflater.getContext(), WallDetailActivity.class);
+                                            intent.putExtra("id",parentId);
+                                            mInflater.getContext().startActivity(intent);
+                                        }
+//                                        Message message = new Message();
+//                                        message.what = 1;
+//                                        message.obj = jsonObject;
+//                                        handlerSendData.sendMessage(message);
+                                    }
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
+                                        error.printStackTrace();
+                                        Toast.makeText(WallDetailActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                })
+                                {
+                                    @Override
+                                    public Map<String, String> getHeaders() throws AuthFailureError {
+                                        // 请求头
+                                        Map<String, String> map = new HashMap<String, String>();
+                                        map.put("Authorization","Bearer " + sharedPreferences.getString("token",""));
+                                        map.put("Content-Type","application/json");
+                                        return map;
+                                    }
+                                };
+                                request.add(stringRequest);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    mThread.start();
+
                     dialog.dismiss();
 //                    CommentDetailBean detailBean = new CommentDetailBean("小明", commentContent,"刚刚");
 //                    commentadapter.addTheCommentData(detailBean);
