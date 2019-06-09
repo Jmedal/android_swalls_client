@@ -1,6 +1,6 @@
-package com.example.swalls.core.security.security.impl;
+package com.example.swalls.core.data.security.impl;
 
-import com.example.swalls.core.security.security.DataSecurityAction;
+import com.example.swalls.core.data.security.DataSecurityAction;
 import android.util.Base64;
 
 /**

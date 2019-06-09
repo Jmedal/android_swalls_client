@@ -20,7 +20,7 @@ import com.android.volley.toolbox.ImageRequest;
 import com.example.swalls.R;
 import com.example.swalls.WallDetailActivity;
 import com.example.swalls.adapter.holder.QListViewHolder;
-import com.example.swalls.core.util.VolleySingleton;
+import com.example.swalls.core.http.VolleySingleton;
 import com.example.swalls.modal.Wall;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.example.swalls.core.util;
+package com.example.swalls.core.http;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

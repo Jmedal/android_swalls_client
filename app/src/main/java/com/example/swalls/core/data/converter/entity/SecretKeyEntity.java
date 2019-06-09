@@ -1,4 +1,4 @@
-package com.example.swalls.core.security.converter.entity;
+package com.example.swalls.core.data.converter.entity;
 
 /**
  * 数据加密参数

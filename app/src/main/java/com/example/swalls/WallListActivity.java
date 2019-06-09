@@ -25,10 +25,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.adapter.QuestionListViewAdapter;
 import com.example.swalls.constant.Const;
+import com.example.swalls.core.data.converter.MultipartHttpConverter;
+import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
+import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.http.JsonArrayRequest;
-import com.example.swalls.core.security.converter.MultipartHttpConverter;
-import com.example.swalls.core.security.converter.entity.BaseTransferEntity;
-import com.example.swalls.core.security.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.modal.Wall;
 
@@ -44,7 +44,8 @@ import java.util.Map;
 
 public class WallListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
-    public static String URL;  //定义网络图片地址
+    public static String URL = Const.URL + "/wall";  //定义网络图片地址
+
     public String abstracts = "";
 
     private String url;
@@ -103,7 +104,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
 
         //模块标题  顶栏
         ((TextView)findViewById(R.id.item_mode_name)).setText("首页");
-        WallListActivity.URL = Const.URL + "/wall";
         this.url = WallListActivity.URL + "/selectByAbstracts";  //获取问题列表接口
 
         init();

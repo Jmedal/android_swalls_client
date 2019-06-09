@@ -14,10 +14,8 @@
     </item>
     <item>
         <shape>
-            <solid android:color="@color/white"/>
+            <solid android:color="@color/issue_button"/>
             <corners android:radius="8dp"/>
         </shape>
     </item>
 </selector>
-
-

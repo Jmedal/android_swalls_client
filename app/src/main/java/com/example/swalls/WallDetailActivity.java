@@ -39,15 +39,12 @@ import com.android.volley.toolbox.Volley;
 import com.example.swalls.adapter.AnswerListViewAdapter;
 import com.example.swalls.adapter.CommentExpandAdapter;
 import com.example.swalls.constant.Const;
+import com.example.swalls.core.data.converter.MultipartHttpConverter;
+import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
 import com.example.swalls.core.http.JsonArrayRequest;
 import com.example.swalls.core.http.JsonObjectRequestString;
-import com.example.swalls.core.security.converter.MultipartHttpConverter;
-import com.example.swalls.core.security.converter.entity.BaseTransferEntity;
+import com.example.swalls.core.http.VolleySingleton;
 import com.example.swalls.core.util.JsonUtils;
-import com.example.swalls.core.util.VolleySingleton;
-import com.example.swalls.modal.College;
-import com.example.swalls.modal.Edu;
-import com.example.swalls.modal.Lecture;
 import com.example.swalls.modal.Wall;
 
 import org.json.JSONArray;

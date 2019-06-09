@@ -1,4 +1,4 @@
-package com.example.swalls.core.security.security;
+package com.example.swalls.core.data.security;
 
 /**
  * <pre>

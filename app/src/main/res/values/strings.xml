@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">校园生活宝</string>
+
     <string name="mode_name">模块</string>
+
+    <string-array name="grade">
+        <item>大一</item>
+        <item>大二</item>
+        <item>大三</item>
+        <item>大四</item>
+    </string-array>
+
 </resources>

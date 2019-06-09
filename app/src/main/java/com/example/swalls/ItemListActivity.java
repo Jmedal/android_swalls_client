@@ -23,7 +23,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.swalls.adapter.ListViewAdapter;
 import com.example.swalls.constant.Const;
 import com.example.swalls.constant.Mode;
-import com.example.swalls.core.security.converter.entity.SecretKeyEntity;
+import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.modal.College;
 import com.example.swalls.modal.Edu;
@@ -83,7 +83,7 @@ public class ItemListActivity extends AppCompatActivity implements AbsListView.O
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
         //网络请求器
         request = Volley.newRequestQueue(ItemListActivity.this);
-        keyRefresh();
+
 
         convertView = LayoutInflater.from(this).inflate(R.layout.item_loading,null); //item模版
         adapter = new ListViewAdapter(this);
@@ -177,57 +177,5 @@ public class ItemListActivity extends AppCompatActivity implements AbsListView.O
         }
 
     };
-
-    /**
-     * 获取令牌
-     */
-    private void keyRefresh(){
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                SecretKeyEntity sk = JsonUtils.fromJson(response, SecretKeyEntity.class);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token",sk.getToken());
-                                editor.putString("randomKey",sk.getRandomKey());
-                                editor.apply();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(ItemListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            // 请求参数
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("userName", "admin");
-                            map.put("password", "admin");
-                            return map;
-                        }
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            // 请求头
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type","application/x-www-form-urlencoded");
-                            return map;
-                        }
-                    };
-                    request.add(stringRequest);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();
-    }
 }
 
