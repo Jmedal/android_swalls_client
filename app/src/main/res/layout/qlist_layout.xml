@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/eee"
+    android:orientation="horizontal"
+    android:id="@+id/qlist_layout">
+
+
+    <ImageView
+        android:id="@+id/qlist_picture"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:background="@color/eee"
+        android:layout_weight="1"
+        android:scaleType="fitStart"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"/>
+
+    <LinearLayout
+        android:id="@+id/completed_wrap"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/str_qlist"
+        android:gravity="center"
+        android:layout_weight="17"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/qlist_name"
+            android:gravity="left"
+            android:text="item"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:textSize="18sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/qlist_title"
+            android:gravity="left"
+            android:text="item"
+            android:textColor="@color/black"
+            android:layout_marginLeft="10dp"
+            android:textSize="20sp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/qlist_time"
+            android:gravity="right"
+            android:text="2019-2-12"
+            android:textColor="@color/size7"
+            android:layout_marginRight="10dp"
+            android:textSize="14sp"/>
+    </LinearLayout>
+
+</LinearLayout>
+
+
+

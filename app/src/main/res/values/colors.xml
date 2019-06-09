@@ -4,11 +4,17 @@
     <color name="colorPrimaryDark">#2A282B2B</color>
     <color name="colorAccent">#14C5DB</color>
 
-    <item type="color" name="white">#ffffffff</item>
+    <color name="colorDefault">#ffffff</color>
+    <color name="colorBackground">#f1f0f6</color>
+    <color name="colorText">#9b9b9b</color>
+
     <item type="color" name="blue">#03A9F4</item>
     <item type="color" name="border">#ccc</item>
     <item type="color" name="text">#333</item>
-
+    <item type="color" name="eee">#eee</item>
+    <item type="color" name="blue47">#4f47f7</item>
+    <item type="color" name="size7">#777</item>
+    <item type="color" name="white">#ffffffff</item>
     <item type="color" name="category_title_normal_background">#FFADB2AD</item>
 
     <item type="color" name="black">#000000</item>
@@ -17,5 +23,4 @@
     <item type="color" name="college">#0CC308</item>
     <item type="color" name="share">#7E86FC</item>
     <item type="color" name="lecture">#EDCB37</item>
-
 </resources>
