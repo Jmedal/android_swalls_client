@@ -563,7 +563,7 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             error.printStackTrace();
-                            Toast.makeText(WallDetailActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+//                            Toast.makeText(WallDetailActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                         }
                     })
                     {

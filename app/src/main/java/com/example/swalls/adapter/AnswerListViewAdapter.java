@@ -98,14 +98,14 @@ public class AnswerListViewAdapter  extends BaseAdapter {
                 .addToRequestQueue(request);
 
 
-        holder.qlist_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mInflater.getContext(), WallDetailActivity.class);
-                intent.putExtra("id",((Wall)data.get(position)).getId());
-                mInflater.getContext().startActivity(intent);
-            }
-        });
+//        holder.qlist_layout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(mInflater.getContext(), WallDetailActivity.class);
+//                intent.putExtra("id",((Wall)data.get(position)).getId());
+//                mInflater.getContext().startActivity(intent);
+//            }
+//        });
 
         return convertView;
     }

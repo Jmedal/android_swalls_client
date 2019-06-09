@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item type="drawable" name="main_background">#ffe7e7e7</item>
-    <item type="drawable" name="color_background">#ffe7e7e7</item>
-    <item type="drawable" name="newslist_item_background">#ffe7e7e7</item>
+    <item type="drawable" name="main_background">#ffffff</item>
+    <item type="drawable" name="color_background">#ffffff</item>
+    <item type="drawable" name="newslist_item_background">#ffffff</item>
 </resources>
