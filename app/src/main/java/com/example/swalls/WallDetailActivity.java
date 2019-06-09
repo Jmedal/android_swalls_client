@@ -119,6 +119,33 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    //Activity创建或者从后台重新回到前台时被调用
+    @Override
+    protected void onStart() {
+        super.onStart();
+        init();
+        initView();
+        Log.i(TAG, "onStart called.");
+    }
+
+    //Activity从后台重新回到前台时被调用
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        init();
+        initView();
+        Log.i(TAG, "onRestart called.");
+    }
+
+    //Activity创建或者从被覆盖、后台重新回到前台时被调用
+    @Override
+    protected void onResume() {
+        super.onResume();
+        init();
+        initView();
+        Log.i(TAG, "onResume called.");
+    }
+
     private void init(){
         //共享数据
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
@@ -148,6 +175,28 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
     }
 
     /**
+     * 回答问题
+     */
+    @SuppressLint("Handlerleak")
+    private Handler handlerSendData = new Handler(){
+        @Override
+        public void handleMessage(Message msg){
+            try{
+                switch (msg.what){
+                    case 1:
+                        Wall data = JsonUtils.fromJson(msg.obj.toString(), Wall.class);
+                        System.out.println(data);
+                        break;
+                    default:
+                        break;
+                }
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /**
      * by moos on 2018/04/20
      * func:弹出评论框
      */
@@ -175,11 +224,9 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
 
                     final Wall wall = new Wall();
                     wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
-                    wall.setAbstracts("");
-                    wall.setLabel("大一");
                     wall.setParentObjectId(parentId);
                     wall.setWriteContests(commentContent);
-                    wall.setWriterTime("2019/06/09");
+                    wall.setWriterTime("2019/06/10");
 //                    System.out.println(wall);
 
                     mThread = new Thread() {
@@ -199,17 +246,23 @@ public class WallDetailActivity extends AppCompatActivity implements View.OnClic
                                     public void onResponse(String jsonObject) {
                                         System.out.println("response: " + jsonObject);
                                         String response  = jsonObject.replace("\"", "");
-                                        if(response == "accept"){
+                                        if(response.equals("accept")){
                                             System.out.println("回答成功");
 
-                                            Intent intent = new Intent(mInflater.getContext(), WallDetailActivity.class);
-                                            intent.putExtra("id",parentId);
-                                            mInflater.getContext().startActivity(intent);
+                                            //新建一个显式意图，第一个参数为当前Activity类对象，第二个参数为你要打开的Activity类
+                                            Intent intent = new Intent(WallDetailActivity.this,WallDetailActivity.class);
+                                            Bundle bundle = new Bundle();
+                                            bundle.putLong("id", parentId);
+                                            intent.putExtras(bundle);
+                                            startActivity(intent);
+
+//                                            Message message = new Message();
+//                                            message.what = 1;
+//                                            message.obj = jsonObject;
+//                                            handlerSendData.sendMessage(message);
+                                        }else{
+                                            System.out.println("回答了");
                                         }
-//                                        Message message = new Message();
-//                                        message.what = 1;
-//                                        message.obj = jsonObject;
-//                                        handlerSendData.sendMessage(message);
                                     }
                                 }, new Response.ErrorListener() {
                                     @Override
