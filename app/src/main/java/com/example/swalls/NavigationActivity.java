@@ -49,16 +49,19 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
-                        Intent intent1 = new Intent(NavigationActivity.this, WallListActivity.class);
-                        startActivity(intent1);
+                        intent = new Intent(NavigationActivity.this, WallListActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         return true;
                     case R.id.navigation_dashboard:
                         return true;
                     case R.id.navigation_notifications:
-                        Intent intent2 = new Intent(NavigationActivity.this, UserActivity.class);
-                        startActivity(intent2);
+                        intent = new Intent(NavigationActivity.this, UserActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         return true;
                 }
                 return false;

@@ -59,6 +59,8 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
 
     private Thread mThread;
 
+    private Thread tokenThread;
+
     private View convertView;
 
     private Button button;
@@ -123,16 +125,19 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
         bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Intent intent;
                 switch (item.getItemId()) {
                     case R.id.navigation_home:
                         return true;
                     case R.id.navigation_dashboard:
-                        Intent intent1 = new Intent(WallListActivity.this, NavigationActivity.class);
-                        startActivity(intent1);
+                        intent = new Intent(WallListActivity.this, NavigationActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         return true;
                     case R.id.navigation_notifications:
-                        Intent intent2 = new Intent(WallListActivity.this, UserActivity.class);
-                        startActivity(intent2);
+                        intent = new Intent(WallListActivity.this, UserActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                         return true;
                 }
                 return false;
@@ -145,9 +150,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
         //网络请求器
         request = Volley.newRequestQueue(WallListActivity.this);
-
-        keyRefresh();
-
         //数据转换器
         multipartHttpConverter = new MultipartHttpConverter();
 
@@ -157,6 +159,8 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
         listView.addFooterView(convertView);  //添加到脚页显示
         listView.setAdapter(adapter);  //给listview添加适配器
         listView.setOnScrollListener(this);  //给listview注册滚动监听
+
+        keyRefresh();
     }
 
     @Override
@@ -319,7 +323,7 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
      * 获取令牌
      */
     private void keyRefresh(){
-        Thread thread = new Thread() {
+        tokenThread = new Thread() {
             @Override
             public void run() {
                 try {
@@ -331,6 +335,7 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("token",sk.getToken());
                                 editor.putString("randomKey",sk.getRandomKey());
+                                editor.putString("avatar","https://wx.qlogo.cn/mmopen/vi_32/yqiciclJJuEQNm3iadNQmFxjwiax3lRo1Ipc1cjD6zDWIov6hcic2NqnibxZ1zdMicoObkhulut26OicjOeXLG6SdwIAcA/132");
                                 editor.apply();
                             } catch (IOException e) {
                                 e.printStackTrace();
@@ -364,7 +369,7 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                 }
             }
         };
-        thread.start();
+        tokenThread.start();
     }
 
 }

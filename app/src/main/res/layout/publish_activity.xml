@@ -27,8 +27,23 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:gravity="center">
+        <Button
+            android:id="@+id/publish_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/issue_button_selector"
+            android:text="发布"
+            android:textSize="15sp" />
 
-
+        <Button
+            android:id="@+id/publish_cancel_btn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/publish_btn"
+            android:layout_marginTop="-9dp"
+            android:background="@drawable/issue_button_selector"
+            android:text="取消"
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <!-- 显示图片 -->
@@ -46,11 +61,11 @@
             android:layout_alignParentBottom="true" >
 
             <EditText
-                android:id="@+id/issue_title"
+                android:id="@+id/publish_title"
                 android:layout_width="fill_parent"
                 android:layout_height="32dp"
                 android:layout_margin="12dp"
-                android:hint="  摘要..."
+                android:hint="  活动主题..."
                 android:maxLength="500"
                 android:singleLine="false"
                 android:textColor="#000000"
@@ -58,37 +73,35 @@
                 android:background="@drawable/issue_shape"/>
 
             <EditText
-                android:id="@+id/issue_content"
+                android:id="@+id/publish_content"
                 android:layout_width="fill_parent"
                 android:layout_height="120dp"
                 android:layout_margin="12dp"
-                android:hint="  内容..."
+                android:hint="  活动内容..."
                 android:maxLength="500"
                 android:singleLine="false"
                 android:textColor="#000000"
                 android:textSize="15sp"
                 android:background="@drawable/issue_shape"/>
 
-            <!-- 网格显示图片 行列间距5dp 每列宽度90dp -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="所属年级"
+                    android:text="所属社团"
                     android:textColor="@color/black"
                     android:textSize="15sp" />
-
-                <Spinner
-                    android:id="@+id/grade"
+                <EditText
+                    android:id="@+id/college"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:hint=" ..社团名称..."
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
@@ -96,41 +109,9 @@
                     android:layout_marginRight="8dp"
                     android:layout_marginBottom="8dp"
                     android:layout_weight="0.5"
-                    android:textSize="10sp" />
+                    android:textSize="15sp"
+                    android:background="#fff"/>
             </LinearLayout>
-
-            <GridView
-                android:id="@+id/gridView1"
-                android:layout_width="fill_parent"
-                android:layout_height="200dp"
-                android:layout_margin="10dp"
-                android:horizontalSpacing="5dp"
-                android:verticalSpacing="5dp"
-                android:numColumns="4"
-                android:columnWidth="90dp"
-                android:stretchMode="columnWidth"
-                android:gravity="center"/>
-
-
-            <Button
-                android:id="@+id/issue_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/issue_button_selector"
-                android:text="提问"
-                android:textSize="15sp" />
-
-            <Button
-                android:id="@+id/issue_cancel_btn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="-9dp"
-                android:background="@drawable/issue_button_selector"
-                android:text="取消"
-                android:textSize="15sp" />
-
         </LinearLayout>
-
     </RelativeLayout>
-
 </RelativeLayout>

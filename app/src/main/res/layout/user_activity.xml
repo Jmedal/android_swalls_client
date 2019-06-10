@@ -18,7 +18,8 @@
 
     <LinearLayout style="@style/wrap_layout"
         android:layout_height="0dp"
-        android:layout_weight="3">
+        android:layout_weight="3"
+        android:background="#EFF2F5">
         <!-- 上圆角-->
         <LinearLayout
             android:id="@+id/ask_question"
@@ -58,11 +59,9 @@
         <LinearLayout
             android:id="@+id/publish_college"
             style="@style/single_layout">
-
             <TextView
                 style="@style/usertext"
                 android:text="发布活动" />
-
             <ImageView style="@style/img_arrow" />
         </LinearLayout>
 

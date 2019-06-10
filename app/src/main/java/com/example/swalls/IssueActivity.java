@@ -39,31 +39,25 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.constant.Const;
-import com.example.swalls.constant.Mode;
 import com.example.swalls.core.data.converter.MultipartHttpConverter;
 import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
-import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.http.JsonObjectRequestString;
 import com.example.swalls.core.http.MultipartRequest;
 import com.example.swalls.core.util.DateUtil;
 import com.example.swalls.core.util.ImageTypeUtils;
-import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.core.http.entity.MultipartEntity;
 import com.example.swalls.modal.Wall;
 
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.example.swalls.constant.Mode.MODE_SHARE;
 
 public class IssueActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -73,13 +67,13 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private static String URL;
 
-    private String infoUrl = IssueActivity.URL + "/get";
+    private String infoUrl;
 
-    private String imageUrl = IssueActivity.URL  + "/upLoadPicture";
+    private String imageUrl;
 
     private GridView gridView;                              //网格显示缩略图
 
-    private Button publish;                                 //发布按钮
+    private Button issue;                                 //发布按钮
 
     private Button cancel;                                  //取消按钮
 
@@ -121,8 +115,9 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
         if(bundle!=null){
             ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name")); //设置模式名
             IssueActivity.URL = Const.URL + bundle.getString("mode");                          //设置模式 根URL
+            infoUrl = IssueActivity.URL + "/get";
+            imageUrl = IssueActivity.URL  + "/upLoadPicture";
         }
-        keyRefresh();
         init();
     }
 
@@ -135,12 +130,12 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
         multipartHttpConverter = new MultipartHttpConverter();
         title = (EditText)findViewById(R.id.issue_title);
         content = (EditText)findViewById(R.id.issue_content);
-        publish = (Button)findViewById(R.id.publish__btn);
-        cancel = (Button)findViewById(R.id.cansel_btn);
+        issue = (Button)findViewById(R.id.issue_btn);
+        cancel = (Button)findViewById(R.id.issue_cancel_btn);
         gridView = (GridView)findViewById(R.id.gridView1);
         grade = (Spinner)findViewById(R.id.grade);
 
-        publish.setOnClickListener(this);
+        issue.setOnClickListener(this);
         cancel.setOnClickListener(this);
         grade.setOnItemSelectedListener(this);
 
@@ -193,9 +188,9 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
      */
     @Override
     public void onClick(View v) {
-        if(v.getId() == R.id.publish__btn){
+        if(v.getId() == R.id.issue_btn){
             uploadWallInfo();
-        }else if (v.getId() == R.id.cansel_btn){
+        }else if (v.getId() == R.id.issue_cancel_btn){
             this.finish();
         }
     }
@@ -260,7 +255,9 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
                             }
                         };
                         mThread.start();
-                        startActivity(new Intent(IssueActivity.this, WallListActivity.class));
+                        Intent intent = new Intent(IssueActivity.this, WallListActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
                     }
                     break;
                 default:
@@ -303,9 +300,9 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
                         final BaseTransferEntity finalBte = bte;
                         JsonObjectRequestString stringRequest = new JsonObjectRequestString(Request.Method.POST, infoUrl, jsonObject, new Response.Listener<String>() {
                             @Override
-                            public void onResponse(String jsonObject) {
-                                System.out.println("response: " + jsonObject);
-                                String response  = jsonObject.replace("\"", "");
+                            public void onResponse(String str) {
+                                System.out.println("response: " + str);
+                                String response  = str.replace("\"", "");
                                 if(response.equals("accept")){
                                     Toast.makeText(IssueActivity.this, "提问成功", Toast.LENGTH_LONG).show();
                                     Message message = new Message();
@@ -450,58 +447,5 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
                 finish();
             }
         }
-    }
-
-
-    /**
-     * 获取令牌
-     */
-    private void keyRefresh(){
-        Thread thread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                SecretKeyEntity sk = JsonUtils.fromJson(response, SecretKeyEntity.class);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token",sk.getToken());
-                                editor.putString("randomKey",sk.getRandomKey());
-                                editor.apply();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(IssueActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            // 请求参数
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("userName", "admin");
-                            map.put("password", "admin");
-                            return map;
-                        }
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            // 请求头
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type","application/x-www-form-urlencoded");
-                            return map;
-                        }
-                    };
-                    request.add(stringRequest);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        thread.start();
     }
 }
