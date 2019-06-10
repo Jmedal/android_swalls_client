@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical">
@@ -35,7 +36,9 @@
         </RelativeLayout>
     </LinearLayout>
 
+
     <GridLayout
+        android:id="@+id/gridLayout"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
@@ -49,29 +52,29 @@
         android:rowCount="2"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.9"
-        app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintVertical_bias="0.32">
+        app:layout_constraintVertical_bias="0.32"
+        app:layout_constraintWidth_percent="0.9">
 
         <ImageView
             android:id="@+id/edu_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_margin="5dp"
             android:background="@color/edu"
-            app:srcCompat="@mipmap/edu_img"/>
+            app:srcCompat="@mipmap/edu_img" />
 
         <ImageView
             android:id="@+id/college_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_margin="5dp"
             android:background="@color/college"
@@ -81,8 +84,8 @@
             android:id="@+id/sahre_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_margin="5dp"
             android:background="@color/share"
@@ -92,12 +95,26 @@
             android:id="@+id/lecture_img"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_columnWeight="1"
             android:layout_rowWeight="1"
+            android:layout_columnWeight="1"
             android:layout_gravity="fill"
             android:layout_margin="5dp"
             android:background="@color/lecture"
             app:srcCompat="@mipmap/lecture_img" />
-
     </GridLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/navigation_2"
+        android:layout_width="0dp"
+        android:layout_marginTop="280dp"
+        android:layout_marginBottom="0dp"
+        android:layout_height="wrap_content"
+        android:background="#fff"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/gridLayout"
+        app:menu="@menu/foot_navigation" />
+
+
 </android.support.constraint.ConstraintLayout>

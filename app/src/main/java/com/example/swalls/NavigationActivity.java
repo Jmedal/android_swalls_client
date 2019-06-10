@@ -1,8 +1,11 @@
 package com.example.swalls;
 
 import android.content.Intent;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -33,6 +36,34 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
         college_btn.setOnClickListener(this);
         sahre_btn.setOnClickListener(this);
         lecture_btn.setOnClickListener(this);
+        initView();
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        final BottomNavigationView bnv = (BottomNavigationView) findViewById(R.id.navigation_2);
+        bnv.setSelectedItemId(R.id.navigation_dashboard);
+        //点击选择item
+        bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        Intent intent1 = new Intent(NavigationActivity.this, WallListActivity.class);
+                        startActivity(intent1);
+                        return true;
+                    case R.id.navigation_dashboard:
+                        return true;
+                    case R.id.navigation_notifications:
+                        Intent intent2 = new Intent(NavigationActivity.this, UserActivity.class);
+                        startActivity(intent2);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

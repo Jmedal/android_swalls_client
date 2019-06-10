@@ -6,9 +6,12 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.Button;
@@ -71,7 +74,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-
         //新页面接收数据
         //接收abstracts值
         Intent intent = getIntent();
@@ -81,8 +83,8 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
             abstracts = bundle.getString("abstracts","");
             Log.i("获取到的abstracts值为", abstracts);
         }
-
         setContentView(R.layout.qlist_list);
+        initView();
 
         //搜索按钮
         button = (Button) findViewById(R.id.button);
@@ -109,6 +111,33 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
         init();
 
         requestWallListInfo();
+    }
+
+    /**
+     * 初始化
+     */
+    private void initView() {
+        final BottomNavigationView bnv = (BottomNavigationView) findViewById(R.id.navigation_1);
+        bnv.setSelectedItemId(R.id.navigation_home);
+        //点击选择item
+        bnv.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        return true;
+                    case R.id.navigation_dashboard:
+                        Intent intent1 = new Intent(WallListActivity.this, NavigationActivity.class);
+                        startActivity(intent1);
+                        return true;
+                    case R.id.navigation_notifications:
+                        Intent intent2 = new Intent(WallListActivity.this, UserActivity.class);
+                        startActivity(intent2);
+                        return true;
+                }
+                return false;
+            }
+        });
     }
 
     private void init() {

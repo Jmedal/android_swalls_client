@@ -19,8 +19,8 @@
         <activity android:name=".WallDetailActivity"/>
         <activity android:name=".SearchDemo"/>
         <activity android:name=".NavigationActivity"/>
-        <activity android:name=".WallListActivity"/>
-        <activity android:name=".IssueActivity">
+        <activity android:name=".IssueActivity"/>
+        <activity android:name=".WallListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

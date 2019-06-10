@@ -31,6 +31,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -41,6 +42,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.constant.Const;
+import com.example.swalls.constant.Mode;
 import com.example.swalls.core.data.converter.MultipartHttpConverter;
 import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
 import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
@@ -61,15 +63,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.swalls.constant.Mode.MODE_SHARE;
+
 public class IssueActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final int WRITE_PERMISSION = 0x01;
 
     private static final String TAG = "IssueActivity";
 
-    private String infoUrl = Const.URL + "/wall/get";
+    private static String URL;
 
-    private String imageUrl = Const.URL + "/wall/upLoadPicture";
+    private String infoUrl = IssueActivity.URL + "/get";
+
+    private String imageUrl = IssueActivity.URL  + "/upLoadPicture";
 
     private GridView gridView;                              //网格显示缩略图
 
@@ -109,6 +115,13 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.issue_activity);
+        Bundle bundle = getIntent().getExtras();
+
+        String mode = null;
+        if(bundle!=null){
+            ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name")); //设置模式名
+            IssueActivity.URL = Const.URL + bundle.getString("mode");                          //设置模式 根URL
+        }
         keyRefresh();
         init();
     }
