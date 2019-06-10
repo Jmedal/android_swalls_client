@@ -21,10 +21,11 @@
         <activity android:name=".SearchDemo" />
         <activity android:name=".NavigationActivity" />
         <activity android:name=".IssueActivity" />
+        <activity android:name=".MyquestionListActivity"/>
+        <activity android:name=".MycollectListActivity"/>
         <activity android:name=".WallListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

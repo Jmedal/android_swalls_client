@@ -18,12 +18,13 @@
 
     <LinearLayout style="@style/wrap_layout"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="6"
         android:background="#EFF2F5">
         <!-- 上圆角-->
         <LinearLayout
             android:id="@+id/ask_question"
-            style="@style/top_layout">
+            style="@style/top_layout"
+            android:layout_weight="1">
             <TextView style="@style/usertext" android:text="提出问题" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
@@ -33,7 +34,8 @@
         <!-- 无圆角-->
         <LinearLayout
             android:id="@+id/my_question"
-            style="@style/mid_layout">
+            style="@style/mid_layout"
+            android:layout_weight="1">
             <TextView style="@style/usertext" android:text="我的提问" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
@@ -42,7 +44,8 @@
         <!-- 下圆角-->
         <LinearLayout
             android:id="@+id/my_collection"
-            style="@style/bottom_layout">
+            style="@style/bottom_layout"
+            android:layout_weight="1">
             <TextView style="@style/usertext" android:text="我的收藏" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
@@ -54,11 +57,12 @@
     <LinearLayout
         style="@style/wrap_layout"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_weight="2">
 
         <LinearLayout
             android:id="@+id/publish_college"
-            style="@style/single_layout">
+            style="@style/single_layout"
+            android:layout_weight="2">
             <TextView
                 style="@style/usertext"
                 android:text="发布活动" />
@@ -69,7 +73,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="8">
+        android:layout_weight="10">
 
     </LinearLayout>
 

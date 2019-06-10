@@ -42,8 +42,10 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化头像
      */
     private void initImageView(){
+//        System.out.println(sharedPreferences.getString("avatar",""));
         ImageRequest request = new ImageRequest(
-                sharedPreferences.getString("avatar",""),
+//                sharedPreferences.getString("avatar",""),
+                "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKyskCV8S7lTKbf3YR1esyNlGyWe9MrptfqJhwkQAzynRtcQB7tyex9LmtsDpSbjEYqMZ7sxflHdA/132",
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
@@ -117,12 +119,19 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 intent.putExtra("mode","/wall");
                 startActivity(intent);
                 break;
-            case R.id.my_collection:
 
-                break;
             case R.id.my_question:
-
+                intent = new Intent(UserActivity.this,MyquestionListActivity.class);
+                //启动
+                startActivity(intent);
                 break;
+
+            case R.id.my_collection:
+                intent = new Intent(UserActivity.this,MycollectListActivity.class);
+                //启动
+                startActivity(intent);
+                break;
+
             case R.id.publish_college:
                 intent = new Intent(UserActivity.this, PublishActivity.class);
                 intent.putExtra("mode_name","发布活动");

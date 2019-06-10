@@ -19,7 +19,7 @@
 
     <item type="color" name="black">#000000</item>
 
-    <item type="color" name="issue_button">#D8D8D8</item>
+    <item type="color" name="issue_button">#dddddd</item>
 
     <item type="color" name="edu">#FD6666</item>
     <item type="color" name="college">#0CC308</item>
