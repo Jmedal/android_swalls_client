@@ -21,7 +21,7 @@
         <activity android:name=".SearchDemo" />
         <activity android:name=".NavigationActivity" />
         <activity android:name=".IssueActivity" />
-        <activity android:name=".MyquestionListActivity"/>
+        <activity android:name=".MyQuestionListActivity"/>
         <activity android:name=".MycollectListActivity"/>
         <activity android:name=".WallListActivity">
             <intent-filter>

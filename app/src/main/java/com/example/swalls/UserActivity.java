@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -33,6 +34,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.user_activity);
+        ((TextView)findViewById(R.id.item_mode_name)).setText("个人页面");
         initView();
         init();
         initImageView();
@@ -42,10 +44,8 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
      * 初始化头像
      */
     private void initImageView(){
-//        System.out.println(sharedPreferences.getString("avatar",""));
         ImageRequest request = new ImageRequest(
-//                sharedPreferences.getString("avatar",""),
-                "https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKyskCV8S7lTKbf3YR1esyNlGyWe9MrptfqJhwkQAzynRtcQB7tyex9LmtsDpSbjEYqMZ7sxflHdA/132",
+                sharedPreferences.getString("avatar",""),
                 new Response.Listener<Bitmap>() {
                     @Override
                     public void onResponse(Bitmap bitmap) {
@@ -62,6 +62,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         VolleySingleton.getVolleySingleton(getApplicationContext())
                 .addToRequestQueue(request);
     }
+
     /**
      * 初始化
      */
@@ -115,13 +116,11 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.ask_question:
                 intent = new Intent(UserActivity.this, IssueActivity.class);
-                intent.putExtra("mode_name","提出问题");
-                intent.putExtra("mode","/wall");
                 startActivity(intent);
                 break;
 
             case R.id.my_question:
-                intent = new Intent(UserActivity.this,MyquestionListActivity.class);
+                intent = new Intent(UserActivity.this, MyQuestionListActivity.class);
                 //启动
                 startActivity(intent);
                 break;
@@ -134,8 +133,6 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.publish_college:
                 intent = new Intent(UserActivity.this, PublishActivity.class);
-                intent.putExtra("mode_name","发布活动");
-                intent.putExtra("mode","/college");
                 startActivity(intent);
                 break;
         }

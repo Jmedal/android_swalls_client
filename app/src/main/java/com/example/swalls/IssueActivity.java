@@ -73,7 +73,7 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private GridView gridView;                              //网格显示缩略图
 
-    private Button issue;                                 //发布按钮
+    private Button issue;                                   //发布按钮
 
     private Button cancel;                                  //取消按钮
 
@@ -101,7 +101,7 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
 
     private RequestQueue request;                           //Volley队列
 
-    private MultipartHttpConverter multipartHttpConverter; //数据转换器
+    private MultipartHttpConverter multipartHttpConverter;  //数据转换器
 
     private String gradeStr;
 
@@ -109,16 +109,13 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.issue_activity);
-        Bundle bundle = getIntent().getExtras();
+        ((TextView)findViewById(R.id.item_mode_name)).setText("提出问题");
+        IssueActivity.URL = Const.URL + "/wall";
+        this.infoUrl = IssueActivity.URL + "/get";
+        this.imageUrl = IssueActivity.URL  + "/upLoadPicture";
 
-        String mode = null;
-        if(bundle!=null){
-            ((TextView)findViewById(R.id.item_mode_name)).setText(bundle.getString("mode_name")); //设置模式名
-            IssueActivity.URL = Const.URL + bundle.getString("mode");                          //设置模式 根URL
-            infoUrl = IssueActivity.URL + "/get";
-            imageUrl = IssueActivity.URL  + "/upLoadPicture";
-        }
         init();
+        requestWritePermission();
     }
 
     /**
@@ -281,7 +278,7 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
             Log.i(TAG, title);
             Log.i(TAG, content);
             final Wall wall = new Wall();
-            wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
+            wall.setOpenId(sharedPreferences.getString("openId",""));
             wall.setParentObjectId((long)0);
             wall.setAbstracts(title);
             wall.setLabel(gradeStr);
@@ -343,7 +340,6 @@ public class IssueActivity extends AppCompatActivity implements AdapterView.OnIt
      */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        requestWritePermission();
         if( imageItem.size() == 10) {
             Toast.makeText(IssueActivity.this, "图片数9张已满", Toast.LENGTH_SHORT).show();
         }

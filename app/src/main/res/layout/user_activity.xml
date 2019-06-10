@@ -2,13 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F0F3F6"
-    >
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
-    <include layout="@layout/title_layout"/>
+    <include layout="@layout/title_layout" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -16,8 +15,9 @@
         android:layout_height="120dp"
         app:srcCompat="@mipmap/ic_launcher_round" />
 
-    <LinearLayout style="@style/wrap_layout"
-        android:layout_height="0dp"
+    <LinearLayout
+        style="@style/wrap_layout"
+        android:layout_height="wrap_content"
         android:layout_weight="6"
         android:background="#EFF2F5">
         <!-- 上圆角-->
@@ -25,29 +25,41 @@
             android:id="@+id/ask_question"
             style="@style/top_layout"
             android:layout_weight="1">
-            <TextView style="@style/usertext" android:text="提出问题" />
-            <ImageView style="@style/img_arrow"/>
+
+            <TextView
+                style="@style/usertext"
+                android:text="提出问题" />
+
+            <ImageView style="@style/img_arrow" />
         </LinearLayout>
 
         <!-- 分割线 -->
-        <View style="@style/bg_line"/>
+        <View style="@style/bg_line" />
         <!-- 无圆角-->
         <LinearLayout
             android:id="@+id/my_question"
             style="@style/mid_layout"
             android:layout_weight="1">
-            <TextView style="@style/usertext" android:text="我的提问" />
-            <ImageView style="@style/img_arrow"/>
+
+            <TextView
+                style="@style/usertext"
+                android:text="我的提问" />
+
+            <ImageView style="@style/img_arrow" />
         </LinearLayout>
 
-        <View style="@style/bg_line"/>
+        <View style="@style/bg_line" />
         <!-- 下圆角-->
         <LinearLayout
             android:id="@+id/my_collection"
             style="@style/bottom_layout"
             android:layout_weight="1">
-            <TextView style="@style/usertext" android:text="我的收藏" />
-            <ImageView style="@style/img_arrow"/>
+
+            <TextView
+                style="@style/usertext"
+                android:text="我的收藏" />
+
+            <ImageView style="@style/img_arrow" />
         </LinearLayout>
 
     </LinearLayout>
@@ -56,20 +68,23 @@
     <!-- 全圆角-->
     <LinearLayout
         style="@style/wrap_layout"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="2">
 
         <LinearLayout
             android:id="@+id/publish_college"
             style="@style/single_layout"
             android:layout_weight="2">
+
             <TextView
                 style="@style/usertext"
                 android:text="发布活动" />
+
             <ImageView style="@style/img_arrow" />
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -78,14 +93,14 @@
     </LinearLayout>
 
     <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
+    <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content">-->
 
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/navigation_3"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginStart="0dp"

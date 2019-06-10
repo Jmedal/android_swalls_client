@@ -1,20 +1,14 @@
 package com.example.swalls;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,13 +18,11 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.swalls.adapter.QuestionListViewAdapter;
 import com.example.swalls.constant.Const;
 import com.example.swalls.core.data.converter.MultipartHttpConverter;
 import com.example.swalls.core.data.converter.entity.BaseTransferEntity;
-import com.example.swalls.core.data.converter.entity.SecretKeyEntity;
 import com.example.swalls.core.http.JsonArrayRequest;
 import com.example.swalls.core.util.JsonUtils;
 import com.example.swalls.modal.Wall;
@@ -38,14 +30,11 @@ import com.example.swalls.modal.Wall;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.android.volley.toolbox.JsonArrayRequest;
-
-public class MyquestionListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
+public class MyQuestionListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
     public static String URL = Const.URL + "/wall";  //定义网络图片地址
 
@@ -59,11 +48,7 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
 
     private Thread mThread;
 
-    private Thread tokenThread;
-
     private View convertView;
-
-    private Button button;
 
     //共享数据
     private SharedPreferences sharedPreferences;
@@ -76,22 +61,11 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //新页面接收数据
-        //接收abstracts值
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        System.out.println(bundle);
-        if(bundle != null){
-            abstracts = bundle.getString("abstracts","");
-            Log.i("获取到的abstracts值为", abstracts);
-        }
         setContentView(R.layout.myquestion_list);
-        //模块标题  顶栏
         ((TextView)findViewById(R.id.item_mode_name)).setText("我的提问");
-        this.url = WallListActivity.URL + "/myQuestions";  //获取问题列表接口
+        this.url = WallListActivity.URL + "/myQuestions";
 
         init();
-
         requestWallListInfo();
     }
 
@@ -99,28 +73,22 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
         //共享数据
         sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
         //网络请求器
-        request = Volley.newRequestQueue(MyquestionListActivity.this);
+        request = Volley.newRequestQueue(MyQuestionListActivity.this);
         //数据转换器
         multipartHttpConverter = new MultipartHttpConverter();
 
-//        convertView = LayoutInflater.from(this).inflate(R.layout.qlist_end,null);
         adapter = new QuestionListViewAdapter(this);
         listView = (ListView)findViewById(R.id.list);  //得到一个listView用来显示条目
-//        listView.addFooterView(convertView);  //添加到脚页显示
-        listView.setAdapter(adapter);  //给listview添加适配器
-        listView.setOnScrollListener(this);  //给listview注册滚动监听
-
-        keyRefresh();
+        listView.setAdapter(adapter);                  //给listview添加适配器
+        listView.setOnScrollListener(this);            //给listview注册滚动监听
     }
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture){
-
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int tableItemCount){
-
     }
 
     /**
@@ -135,7 +103,7 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
                     // 请求参数
                     BaseTransferEntity bte = null;
                     Wall wall = new Wall();
-                    wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
+                    wall.setOpenId(sharedPreferences.getString("openId",""));
                     wall.setAbstracts(abstracts);
                     bte = multipartHttpConverter.encryption(wall, sharedPreferences.getString("randomKey",""));
                     //数据加密
@@ -154,7 +122,7 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             error.printStackTrace();
-                            Toast.makeText(MyquestionListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(MyQuestionListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
                         }
                     })
                     {
@@ -174,7 +142,6 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
             }
         };
         mThread.start();
-
     }
 
     @Override
@@ -199,8 +166,6 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
                     }else{
                         listView.removeFooterView(convertView);
                     }
-
-                    //重新刷新listview的adapter里面数据
                     adapter.notifyDataSetChanged();
                     break;
                 default:
@@ -208,58 +173,4 @@ public class MyquestionListActivity extends AppCompatActivity implements AbsList
             }
         }
     };
-
-    /**
-     * 获取令牌
-     */
-    private void keyRefresh(){
-        tokenThread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                SecretKeyEntity sk = JsonUtils.fromJson(response, SecretKeyEntity.class);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token",sk.getToken());
-                                editor.putString("randomKey",sk.getRandomKey());
-                                editor.putString("avatar","https://wx.qlogo.cn/mmopen/vi_32/yqiciclJJuEQNm3iadNQmFxjwiax3lRo1Ipc1cjD6zDWIov6hcic2NqnibxZ1zdMicoObkhulut26OicjOeXLG6SdwIAcA/132");
-                                editor.apply();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(MyquestionListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            // 请求参数
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("userName", "admin");
-                            map.put("password", "admin");
-                            return map;
-                        }
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            // 请求头
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type","application/x-www-form-urlencoded");
-                            return map;
-                        }
-                    };
-                    request.add(stringRequest);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        tokenThread.start();
-    }
-
 }

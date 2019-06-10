@@ -43,8 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import com.android.volley.toolbox.JsonArrayRequest;
-
 public class WallListActivity extends AppCompatActivity implements AbsListView.OnScrollListener {
 
     public static String URL = Const.URL + "/wall";  //定义网络图片地址
@@ -76,17 +74,50 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //新页面接收数据
+        setContentView(R.layout.qlist_list);
+        //模块标题  顶栏
+        ((TextView)findViewById(R.id.item_mode_name)).setText("首页");
+        this.url = WallListActivity.URL + "/selectByAbstracts";  //获取问题列表接口
+
         //接收abstracts值
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        System.out.println(bundle);
         if(bundle != null){
             abstracts = bundle.getString("abstracts","");
             Log.i("获取到的abstracts值为", abstracts);
         }
-        setContentView(R.layout.qlist_list);
+
         initView();
+        init();
+        requestWallListInfo();
+        keyRefresh();
+//        FloatingActionButton fab = findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+//            }
+//        });
+    }
+
+    /**
+     * 初始化
+     */
+    private void init() {
+        //共享数据
+        sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
+        //网络请求器
+        request = Volley.newRequestQueue(WallListActivity.this);
+        //数据转换器
+        multipartHttpConverter = new MultipartHttpConverter();
+
+        convertView = LayoutInflater.from(this).inflate(R.layout.qlist_end,null);
+        adapter = new QuestionListViewAdapter(this);
+        listView = (ListView)findViewById(R.id.list);   //得到一个listView用来显示条目
+        listView.addFooterView(convertView);            //添加到脚页显示
+        listView.setAdapter(adapter);                   //给listview添加适配器
+        listView.setOnScrollListener(this);             //给listview注册滚动监听
 
         //搜索按钮
         button = (Button) findViewById(R.id.button);
@@ -96,23 +127,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                 startActivity(new Intent(WallListActivity.this, SearchDemo.class));
             }
         });
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
-
-        //模块标题  顶栏
-        ((TextView)findViewById(R.id.item_mode_name)).setText("首页");
-        this.url = WallListActivity.URL + "/selectByAbstracts";  //获取问题列表接口
-
-        init();
-
-        requestWallListInfo();
     }
 
     /**
@@ -145,24 +159,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
         });
     }
 
-    private void init() {
-        //共享数据
-        sharedPreferences = getSharedPreferences(Const.SECRET_KEY_DATEBASE,MODE_PRIVATE);
-        //网络请求器
-        request = Volley.newRequestQueue(WallListActivity.this);
-        //数据转换器
-        multipartHttpConverter = new MultipartHttpConverter();
-
-        convertView = LayoutInflater.from(this).inflate(R.layout.qlist_end,null);
-        adapter = new QuestionListViewAdapter(this);
-        listView = (ListView)findViewById(R.id.list);  //得到一个listView用来显示条目
-        listView.addFooterView(convertView);  //添加到脚页显示
-        listView.setAdapter(adapter);  //给listview添加适配器
-        listView.setOnScrollListener(this);  //给listview注册滚动监听
-
-        keyRefresh();
-    }
-
     @Override
     public void onPointerCaptureChanged(boolean hasCapture){
 
@@ -178,39 +174,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
      */
     private void requestWallListInfo() {
 
-//        mThread = new Thread() {
-//            @Override
-//            public void run() {
-//
-//                // 请求参数
-//                BaseTransferEntity bte = null;
-//
-//                Wall wall = new Wall();
-//                wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
-//                wall.setAbstracts("");
-//                bte = multipartHttpConverter.encryption(wall, sharedPreferences.getString("randomKey", ""));
-//
-//                Map<String, String> params = new HashMap<>();
-//                params.put("object", bte.getObject());
-//                params.put("sign", bte.getSign());
-//
-//                HttpUtil.sendHttpRequest(url, params, new HttpUtil.HttpCallbackListener() {
-//
-//                    @Override
-//                    public void onSuccess(String response) {
-//                        Log.i("hhf", " -> onSuccess -> " + response);
-//                    }
-//
-//                    @Override
-//                    public void onError(String info) {
-//                        Log.i("hhf", " -> onError -> " + info);
-//                    }
-//
-//                });
-//            }
-//        };
-//        mThread.start();
-
         mThread = new Thread() {
             @Override
             public void run() {
@@ -218,7 +181,7 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                     // 请求参数
                     BaseTransferEntity bte = null;
                     Wall wall = new Wall();
-                    wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
+                    wall.setOpenId(sharedPreferences.getString("openId",""));
                     wall.setAbstracts(abstracts);
                     bte = multipartHttpConverter.encryption(wall, sharedPreferences.getString("randomKey",""));
                     //数据加密
@@ -257,7 +220,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
             }
         };
         mThread.start();
-
     }
 
     @Override
@@ -265,42 +227,12 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
 
     }
 
-//    @SuppressLint("HandlerLeak")
-//    public Handler handlerGetabstracts = new Handler(){
-//
-//        @Override
-//        public void handleMessage(Message msg){
-//
-//            System.out.println("abstracts: " + msg.obj);
-//
-////            List<Wall> data = (List<Wall>)msg.obj;
-////            switch (msg.what){
-////                case 1:
-////                    if(adapter.getCount() < data.size()){
-////                        adapter.setData(data);
-////                        Log.i("适配器数据注入 ", "数据大小: " + adapter.getCount());
-////                    }else{
-////                        listView.removeFooterView(convertView);
-////                    }
-////
-////                    //重新刷新listview的adapter里面数据
-////                    adapter.notifyDataSetChanged();
-////                    break;
-////                default:
-////                    break;
-////            }
-//        }
-//    };
-
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler(){
-
         @Override
         public void handleMessage(Message msg){
-
-            System.out.println(msg.obj);
-
             List<Wall> data = (List<Wall>)msg.obj;
+
             switch (msg.what){
                 case 1:
                     if(adapter.getCount() < data.size()){
@@ -309,8 +241,6 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                     }else{
                      listView.removeFooterView(convertView);
                     }
-
-                    //重新刷新listview的adapter里面数据
                     adapter.notifyDataSetChanged();
                     break;
                 default:
@@ -323,6 +253,7 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
      * 获取令牌
      */
     private void keyRefresh(){
+
         tokenThread = new Thread() {
             @Override
             public void run() {
@@ -335,7 +266,8 @@ public class WallListActivity extends AppCompatActivity implements AbsListView.O
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("token",sk.getToken());
                                 editor.putString("randomKey",sk.getRandomKey());
-                                editor.putString("avatar","https://wx.qlogo.cn/mmopen/vi_32/yqiciclJJuEQNm3iadNQmFxjwiax3lRo1Ipc1cjD6zDWIov6hcic2NqnibxZ1zdMicoObkhulut26OicjOeXLG6SdwIAcA/132");
+                                editor.putString("avatar","https://wx.qlogo.cn/mmopen/vi_32/Q0j4TwGTfTKyskCV8S7lTKbf3YR1esyNlGyWe9MrptfqJhwkQAzynRtcQB7tyex9LmtsDpSbjEYqMZ7sxflHdA/132");
+                                editor.putString("openId","ojnw95baofXIwxqN6R4PTYGytOaI");
                                 editor.apply();
                             } catch (IOException e) {
                                 e.printStackTrace();

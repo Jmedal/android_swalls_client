@@ -49,8 +49,6 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
 
     public static String URL = Const.URL + "/wall";  //定义网络图片地址
 
-    public String abstracts = "";
-
     private String url;
 
     private QuestionListViewAdapter adapter;
@@ -63,8 +61,6 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
 
     private View convertView;
 
-    private Button button;
-
     //共享数据
     private SharedPreferences sharedPreferences;
 
@@ -76,23 +72,12 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        //新页面接收数据
-        //接收abstracts值
-        Intent intent = getIntent();
-        Bundle bundle = intent.getExtras();
-        System.out.println(bundle);
-        if(bundle != null){
-            abstracts = bundle.getString("abstracts","");
-            Log.i("获取到的abstracts值为", abstracts);
-        }
         setContentView(R.layout.myquestion_list);
-
         //模块标题  顶栏
         ((TextView)findViewById(R.id.item_mode_name)).setText("我的收藏");
         this.url = WallListActivity.URL + "/getCollectQuestions";  //获取问题收藏列表接口
 
         init();
-
         requestWallListInfo();
     }
 
@@ -103,15 +88,10 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
         request = Volley.newRequestQueue(MycollectListActivity.this);
         //数据转换器
         multipartHttpConverter = new MultipartHttpConverter();
-
-//        convertView = LayoutInflater.from(this).inflate(R.layout.qlist_end,null);
         adapter = new QuestionListViewAdapter(this);
-        listView = (ListView)findViewById(R.id.list);  //得到一个listView用来显示条目
-//        listView.addFooterView(convertView);  //添加到脚页显示
-        listView.setAdapter(adapter);  //给listview添加适配器
-        listView.setOnScrollListener(this);  //给listview注册滚动监听
-
-        keyRefresh();
+        listView = (ListView)findViewById(R.id.list);   //得到一个listView用来显示条目
+        listView.setAdapter(adapter);                   //给listview添加适配器
+        listView.setOnScrollListener(this);             //给listview注册滚动监听
     }
 
     @Override
@@ -136,8 +116,7 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
                     // 请求参数
                     BaseTransferEntity bte = null;
                     Wall wall = new Wall();
-                    wall.setOpenId("ojnw95baofXIwxqN6R4PTYGytOaI");
-                    wall.setAbstracts(abstracts);
+                    wall.setOpenId(sharedPreferences.getString("openId",""));
                     bte = multipartHttpConverter.encryption(wall, sharedPreferences.getString("randomKey",""));
                     //数据加密
                     JSONObject jsonObject = new JSONObject();
@@ -209,58 +188,4 @@ public class MycollectListActivity extends AppCompatActivity implements AbsListV
             }
         }
     };
-
-    /**
-     * 获取令牌
-     */
-    private void keyRefresh(){
-        tokenThread = new Thread() {
-            @Override
-            public void run() {
-                try {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, Const.URL, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                SecretKeyEntity sk = JsonUtils.fromJson(response, SecretKeyEntity.class);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putString("token",sk.getToken());
-                                editor.putString("randomKey",sk.getRandomKey());
-                                editor.putString("avatar","https://wx.qlogo.cn/mmopen/vi_32/yqiciclJJuEQNm3iadNQmFxjwiax3lRo1Ipc1cjD6zDWIov6hcic2NqnibxZ1zdMicoObkhulut26OicjOeXLG6SdwIAcA/132");
-                                editor.apply();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(MycollectListActivity.this, error.toString(), Toast.LENGTH_LONG).show();
-                        }
-                    }) {
-                        @Override
-                        protected Map<String, String> getParams() throws AuthFailureError {
-                            // 请求参数
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("userName", "admin");
-                            map.put("password", "admin");
-                            return map;
-                        }
-                        @Override
-                        public Map<String, String> getHeaders() throws AuthFailureError {
-                            // 请求头
-                            Map<String, String> map = new HashMap<String, String>();
-                            map.put("Content-Type","application/x-www-form-urlencoded");
-                            return map;
-                        }
-                    };
-                    request.add(stringRequest);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        tokenThread.start();
-    }
-
 }

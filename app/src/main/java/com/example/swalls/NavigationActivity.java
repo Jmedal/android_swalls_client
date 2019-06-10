@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import static com.example.swalls.constant.Mode.MODE_COLLEGE;
 import static com.example.swalls.constant.Mode.MODE_EDU;
@@ -28,15 +29,22 @@ public class NavigationActivity extends AppCompatActivity implements View.OnClic
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.navigation_activity);
+        init();
+        initView();
+    }
+
+    protected void init(){
         edu_btn = (ImageView)findViewById(R.id.edu_img);
         college_btn = (ImageView)findViewById(R.id.college_img);
         sahre_btn = (ImageView)findViewById(R.id.sahre_img);
         lecture_btn = (ImageView)findViewById(R.id.lecture_img);
+
         edu_btn.setOnClickListener(this);
         college_btn.setOnClickListener(this);
         sahre_btn.setOnClickListener(this);
         lecture_btn.setOnClickListener(this);
-        initView();
+
+        ((TextView)findViewById(R.id.item_mode_name)).setText("校园资讯");
     }
 
     /**
